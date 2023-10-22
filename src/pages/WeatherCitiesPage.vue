@@ -94,7 +94,9 @@ watch(() => weatherCards.value.map((card) => ({ id: card.city.id, isFavorite: ca
 </script>
 
 <template>
-  <p v-if="isLoading" class="loading">Loading...</p>
+  <div v-if="isLoading" class="loading">
+    <p class="loading-text">Loading...</p>
+  </div>
   <div v-else class="weather-page-wrapper">
     <CardsList
       :weather-cards="weatherCards"
@@ -125,11 +127,14 @@ watch(() => weatherCards.value.map((card) => ({ id: card.city.id, isFavorite: ca
 .fade-leave-to {
   opacity: 0;
 }
+
 .loading {
-  position: relative;
-  top: 0;
-  left: 50%;
-  font-size: 24px;
+  display: flex;
+  justify-content: center;
+
+  &-text {
+    font-size: 24px;
+  }
 }
 
 </style>
