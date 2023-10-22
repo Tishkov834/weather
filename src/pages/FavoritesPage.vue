@@ -4,31 +4,37 @@ import { onMounted, ref } from 'vue';
 import { getCityWeatherDetails } from '@/api/getCityWeaterDetails';
 import WeatherCard from '@/components/WeatherCard';
 
-const storedCities = ref(JSON.parse(localStorage.getItem('favoriteCities') || '[]'));
-
 const favoritesCities = ref([]);
 
-const isLoading = ref(false);
+const isLoading = ref(true);
 
-onMounted(() => {
-  isLoading.value = true;
-
-  storedCities.value.map(({ city }) => getCityWeatherDetails(city)
+const fetchFavoriteCities = async (cities) => {
+  await cities.map(({ city }) => getCityWeatherDetails(city)
     .then((cityWeather) => {
       const uId = Date.now();
 
       favoritesCities.value.push({ ...cityWeather, uId, isFavorite: true });
-    })
-    .finally(() => { isLoading.value = false; }));
+    }));
+};
+
+onMounted(async () => {
+  const storedCities = JSON.parse(localStorage.getItem('favoriteCities') || '[]');
+
+  await fetchFavoriteCities(storedCities).finally(() => {
+    isLoading.value = false;
+  });
 });
 </script>
 
 <template>
-  <p v-if="isLoading" class="loading">Loading...</p>
+  <div v-if="isLoading" class="loading">
+    <p class="loading-text">Loading...</p>
+  </div>
   <div v-else class="favorites-page-wrapper">
     <ul v-if="favoritesCities.length" class="favorites-page-wrapper-list">
       <li class="favorites-page-wrapper-list-item" v-for="weather in favoritesCities" :key="weather.city.id">
-        <WeatherCard :city-weather="weather" />
+        <WeatherCard v-if="favoritesCities.length" :city-weather="weather" />
+        <p v-else class="favorites-page-wrapper-empty-text">Favorite cities are not added</p>
       </li>
     </ul>
     <p v-else class="favorites-page-wrapper-empty-text">Favorite cities are not added</p>
@@ -63,10 +69,12 @@ onMounted(() => {
 }
 
 .loading {
-  position: relative;
-  top: 0;
-  left: 50%;
-  font-size: 24px;
+  display: flex;
+  justify-content: center;
+
+  &-text {
+    font-size: 24px;
+  }
 }
 
 </style>
