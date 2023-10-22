@@ -36,6 +36,7 @@ defineProps({
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    z-index: 10;
 
     &-icon {
       width: 50px;

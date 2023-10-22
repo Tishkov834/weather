@@ -8,4 +8,5 @@ const axiosInstance = axios.create({
 axiosInstance.defaults.params = {
   appid: `${process.env.VUE_APP_BASE_API_KEY}`,
 };
+
 export default axiosInstance;

@@ -13,13 +13,16 @@ import Header from '@/components/Header';
 
 <style scoped lang="scss">
 .layout-wrapper {
-  height: 100%;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(135deg, #007bff, #00a8ff);
+
+  .main-content {
+    height: 100%;
+    color: white;
+    min-height: 100%;
+  }
 }
 
-.main-content {
-  background: linear-gradient(135deg, #007bff, #00a8ff);
-  padding: 20px;
-  color: white;
-  height: 100%;
-}
 </style>

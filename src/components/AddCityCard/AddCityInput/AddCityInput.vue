@@ -3,7 +3,7 @@ import { onMounted, ref } from 'vue';
 
 import { getCities } from '@/api/getCities';
 
-defineProps({
+const props = defineProps({
   fetchWeather: Function,
 });
 
@@ -32,7 +32,7 @@ onMounted(() => {
   <div class="add-city-wrapper">
     <input v-model="query" @input="handleInput" placeholder="Enter city..." @keyup.enter="fetchWeather(query)" ref="inputRef" class="add-city-wrapper-input" />
     <ul v-if="cities.length" class="add-city-wrapper-list">
-      <li v-for="city in cities" :key="city.id" @click="fetchWeather(city.name)" @keyup.enter="fetchWeather(city.name)" class="add-city-wrapper-list-item">
+      <li v-for="city in cities" :key="city.id" @click="fetchWeather(`${city.name}, ${city.sys.country}`)" @keyup.enter="fetchWeather(`${city.name}, ${city.sys.country}`)" class="add-city-wrapper-list-item">
         {{ city.name + ', ' + city.sys.country }}
       </li>
     </ul>

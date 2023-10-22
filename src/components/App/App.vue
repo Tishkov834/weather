@@ -10,10 +10,9 @@ import { RouterView } from 'vue-router';
 <style lang="scss">
 @import "normalize.css";
 
-body {
+html, body {
   margin: 0;
   height: 100%;
-  background: linear-gradient(135deg, #007bff, #00a8ff);
 }
 
 #app {
@@ -22,4 +21,5 @@ body {
   -moz-osx-font-smoothing: grayscale;
   height: 100%;
 }
+
 </style>
