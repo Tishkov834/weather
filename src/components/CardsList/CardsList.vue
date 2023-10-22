@@ -23,8 +23,10 @@ const isAddCardShow = computed(() => weatherCards.value.length < 5);
       <li class="cards-wrapper-list-card" v-for="weather in weatherCards" :key="weather.city.id">
         <WeatherCard :city-weather="weather" :delete-card="deleteCard" />
       </li>
+      <li class="cards-wrapper-list-card">
+        <AddCityCard v-if="isAddCardShow" :is-adding-city="isAddingCity" :start-adding-city="startAddingCity" :fetch-weather="fetchWeather" />
+      </li>
     </transition-group>
-    <AddCityCard v-if="isAddCardShow" :is-adding-city="isAddingCity" :start-adding-city="startAddingCity" :fetch-weather="fetchWeather" />
   </div>
 </template>
 
