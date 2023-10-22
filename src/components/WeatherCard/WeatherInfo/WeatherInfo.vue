@@ -1,10 +1,13 @@
 <script setup>
-import { computed, toRefs } from 'vue';
+import { computed, ref, toRefs } from 'vue';
 
 import DeleteIcon from '@/components/icons/DeleteIcon';
 import WindIcon from '@/components/icons/WindIcon';
 import TempIcon from '@/components/icons/TempIcon';
+import FavoriteIcon from '@/components/icons/FavoriteIcon';
+import Notification from '@/components/Notification';
 import { getFormattedData } from '@/helpers/getFormattedData';
+import { useNotification } from '@/composables/useNotification';
 import WeatherChart from '../WeatherChart';
 
 const props = defineProps({
@@ -12,19 +15,55 @@ const props = defineProps({
   deleteCard: Function,
 });
 
-const { city, list, uId } = toRefs(props.cityWeather);
+const { cityWeather } = toRefs(props);
+
+const {
+  city, list, uId, isFavorite,
+} = toRefs(cityWeather.value);
 
 const {
   dt, weather, main, wind,
 } = list.value[0];
 
+const {
+  showNotification, message, onClose, openNotification, closeNotification,
+} = useNotification();
+
 const formattedData = computed(() => getFormattedData(dt));
+
+const toggleFavorite = (cityData, storedCities) => {
+  if (storedCities.value.map(({ id }) => id).includes(cityData.id)) {
+    storedCities.value = storedCities.value.filter(({ id }) => id !== cityData.id);
+  } else {
+    storedCities.value.push({ ...cityData, isFavorite: true });
+  }
+
+  localStorage.setItem('favoriteCities', JSON.stringify(storedCities.value));
+};
+
+const setFavorite = (cityData) => {
+  const storedCities = ref(JSON.parse(localStorage.getItem('favoriteCities') || '[]'));
+
+  if (!cityData.isFavorite && storedCities.value.length > 4) {
+    openNotification(
+      'More than 5 cities in favorites, please remove some favorite cities to add new',
+      () => closeNotification(),
+    );
+  } else {
+    toggleFavorite(cityData, storedCities);
+
+    isFavorite.value = !isFavorite.value;
+  }
+};
 </script>
 
 <template>
   <div class="weather-info">
     <div class="weather-info-header">
-      <button class="weather-info-header-del-button" @click="deleteCard(uId)">
+      <button class="weather-info-header-favorite-button" @click="setFavorite({city: `${city.name}, ${city.country}`, id: city.id, isFavorite})">
+        <FavoriteIcon :class="['weather-info-header-favorite-button-icon', isFavorite && 'favorite']" />
+      </button>
+      <button v-if="deleteCard" class="weather-info-header-del-button" @click="deleteCard(uId)">
         <DeleteIcon class="weather-info-header-del-button-icon" />
       </button>
     </div>
@@ -57,6 +96,11 @@ const formattedData = computed(() => getFormattedData(dt));
       <WeatherChart :weather-list="list" :id="uId"/>
     </div>
   </div>
+  <teleport to="#app">
+    <transition name="fade">
+      <Notification v-if="showNotification" :message="message" :on-close="onClose" />
+    </transition>
+  </teleport>
 </template>
 
 <style scoped lang="scss">
@@ -65,7 +109,8 @@ const formattedData = computed(() => getFormattedData(dt));
 
   &-header {
     display: flex;
-    justify-content: flex-end;
+    align-items: center;
+    justify-content: space-between;
 
     &-del-button {
       width: 30px;
@@ -86,6 +131,30 @@ const formattedData = computed(() => getFormattedData(dt));
 
     &-del-button:hover {
       background: darkgray;
+    }
+
+    &-favorite-button {
+      width: 40px;
+      height: 40px;
+      background: none;
+      border: none;
+      border-radius: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+
+      &-icon {
+        fill: #0074E4;
+      }
+
+      &-icon.favorite {
+        fill: red;
+      }
+
+      &-icon:hover {
+        fill: red;
+      }
     }
   }
 
@@ -158,6 +227,16 @@ const formattedData = computed(() => getFormattedData(dt));
   &-footer{
     margin-top: 30px;
   }
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 
 </style>

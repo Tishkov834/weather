@@ -19,7 +19,10 @@ const routes = [
       },
     ],
   },
-
+  {
+    path: '/:pathMatch(.*)*',
+    component: () => import('../pages/NotFoundPage.vue'),
+  },
 ];
 
 const router = createRouter({

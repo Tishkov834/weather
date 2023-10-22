@@ -48,4 +48,5 @@ import { FAVORITES_PAGE, WEATHER_PAGE } from '@/constants/routes';
     }
   }
 }
+
 </style>

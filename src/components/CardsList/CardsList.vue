@@ -20,7 +20,7 @@ const isAddCardShow = computed(() => weatherCards.value.length < 5);
 <template>
   <div class="cards-wrapper">
     <transition-group name="list" class="cards-wrapper-list" tag="ul">
-      <li class="cards-wrapper-list-card" v-for="weather in weatherCards" :key="weather.uId">
+      <li class="cards-wrapper-list-card" v-for="weather in weatherCards" :key="weather.city.id">
         <WeatherCard :city-weather="weather" :delete-card="deleteCard" />
       </li>
     </transition-group>
@@ -49,17 +49,6 @@ const isAddCardShow = computed(() => weatherCards.value.length < 5);
       list-style: none;
     }
   }
-}
-
-.list-enter-active,
-.list-leave-active {
-  transition: all  0.5s ease;
-}
-
-.list-enter-from,
-.list-leave-to {
-  opacity: 0;
-  transform: translateY(20px);
 }
 
 </style>
