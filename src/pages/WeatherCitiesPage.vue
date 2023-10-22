@@ -10,15 +10,11 @@ const weatherCards = ref([]);
 
 const isAddingCity = ref(false);
 
-const isLoading = ref(false);
-
 const {
   showModal, message, onConfirm, onCancel, openModal, closeModal,
 } = useConfirmModal();
 
 const fetchWeatherByCity = async (city) => {
-  isLoading.value = true;
-
   await getCityWeatherDetails(city)
     .then((cityWeather) => {
       const storedCities = JSON.parse(localStorage.getItem('favoriteCities') || '[]');
@@ -50,7 +46,6 @@ const fetchWeatherByCity = async (city) => {
     })
     .finally(() => {
       isAddingCity.value = false;
-      isLoading.value = false;
     });
 };
 
@@ -94,10 +89,7 @@ watch(() => weatherCards.value.map((card) => ({ id: card.city.id, isFavorite: ca
 </script>
 
 <template>
-  <div v-if="isLoading" class="loading">
-    <p class="loading-text">Loading...</p>
-  </div>
-  <div v-else class="weather-page-wrapper">
+  <div class="weather-page-wrapper">
     <CardsList
       :weather-cards="weatherCards"
       :is-adding-city="isAddingCity"
@@ -126,15 +118,6 @@ watch(() => weatherCards.value.map((card) => ({ id: card.city.id, isFavorite: ca
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
-}
-
-.loading {
-  display: flex;
-  justify-content: center;
-
-  &-text {
-    font-size: 24px;
-  }
 }
 
 </style>
