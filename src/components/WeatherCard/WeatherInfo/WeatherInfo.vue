@@ -12,6 +12,7 @@ import WeatherChart from '../WeatherChart';
 
 const props = defineProps({
   cityWeather: Object,
+  showForecast: Boolean,
   deleteCard: Function,
 });
 
@@ -25,11 +26,21 @@ const {
   dt, weather, main, wind,
 } = list.value[0];
 
+const weather12Hours = list.value.slice(0, 5);
+
+const weather5Days = list.value.filter((element, index) => index % 8 === 0);
+
 const {
   showNotification, message, onClose, openNotification, closeNotification,
 } = useNotification();
 
+const isWeather5Days = ref(false);
+
 const formattedData = computed(() => getFormattedData(dt));
+
+const toggleForecast = () => {
+  isWeather5Days.value = !isWeather5Days.value;
+};
 
 const toggleFavorite = (cityData, storedCities) => {
   if (storedCities.value.map(({ id }) => id).includes(cityData.id)) {
@@ -93,7 +104,11 @@ const setFavorite = (cityData) => {
       </section>
     </div>
     <div class="weather-info-footer">
-      <WeatherChart :weather-list="list" :id="uId"/>
+      <button v-if="showForecast" class="weather-info-footer-button" @click="toggleForecast">
+        12h/5d
+      </button>
+      <WeatherChart v-if="isWeather5Days" :weather-list="weather5Days" :id="uId" :is-forecast="isWeather5Days"/>
+      <WeatherChart v-else :weather-list="weather12Hours" :id="uId" :is-forecast="isWeather5Days"/>
     </div>
   </div>
   <teleport to="#app">
@@ -225,7 +240,19 @@ const setFavorite = (cityData) => {
   }
 
   &-footer{
-    margin-top: 30px;
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+
+    &-button {
+      margin-bottom: 15px;
+      font-size: 16px;
+      align-self: end;
+      cursor: pointer;
+      border-radius: 10px;
+      background: #00a8ff;
+      color: white;
+    }
   }
 }
 

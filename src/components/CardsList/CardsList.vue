@@ -19,14 +19,14 @@ const isAddCardShow = computed(() => weatherCards.value.length < 5);
 
 <template>
   <div class="cards-wrapper">
-    <transition-group name="list" class="cards-wrapper-list" tag="ul">
+    <ul class="cards-wrapper-list">
       <li class="cards-wrapper-list-card" v-for="weather in weatherCards" :key="weather.city.id">
-        <WeatherCard :city-weather="weather" :delete-card="deleteCard" />
+        <WeatherCard :city-weather="weather" :delete-card="deleteCard" :show-forecast="false" />
       </li>
       <li class="cards-wrapper-list-card">
         <AddCityCard v-if="isAddCardShow" :is-adding-city="isAddingCity" :start-adding-city="startAddingCity" :fetch-weather="fetchWeather" />
       </li>
-    </transition-group>
+    </ul>
   </div>
 </template>
 
