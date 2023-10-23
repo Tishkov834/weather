@@ -33,7 +33,7 @@ onMounted(async () => {
   <div v-else class="favorites-page-wrapper">
     <ul v-if="favoritesCities.length" class="favorites-page-wrapper-list">
       <li class="favorites-page-wrapper-list-item" v-for="weather in favoritesCities" :key="weather.city.id">
-        <WeatherCard v-if="favoritesCities.length" :city-weather="weather" />
+        <WeatherCard v-if="favoritesCities.length" :city-weather="weather" :show-forecast="true"/>
         <p v-else class="favorites-page-wrapper-empty-text">Favorite cities are not added</p>
       </li>
     </ul>

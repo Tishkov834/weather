@@ -9,10 +9,7 @@ export const getCityWeatherDetails = async (city) => {
       },
     });
 
-    return {
-      ...data,
-      list: data.list.slice(0, 5),
-    };
+    return data;
   } catch (error) {
     throw new Error(error);
   }
